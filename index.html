@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#080b14" />
+  <title>Magic Chess: Go Go — v5 Ultimate</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="theme-cosmic">
+  <div id="app">
+    <header class="hud-bar">
+      <div class="brand">
+        <span class="brand-badge">MCGG v5</span>
+        <div>
+          <h1>Magic Chess: Go Go</h1>
+          <span class="subtitle">Commanders • Mana & Ultimate • Drag & Drop • Smart AI • SFX</span>
+        </div>
+      </div>
+
+      <div class="player-stats">
+        <div class="stat-pill hp">
+          <span>HP</span>
+          <strong id="player-hp">100</strong>
+        </div>
+        <div class="stat-pill gold">
+          <span>Gold</span>
+          <strong id="player-gold">15</strong>
+        </div>
+        <div class="stat-pill level">
+          <span>Lv</span>
+          <strong id="player-level">4</strong>
+          <small id="player-xp">(0/6)</small>
+        </div>
+        <div class="stat-pill round">
+          <span>Ronde</span>
+          <strong id="round-num">1</strong>
+          <span id="phase-badge" class="phase-tag prep">Persiapan</span>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <select id="arena-theme-select" title="Tema Papan Arena">
+          <option value="cosmic">🌌 Cosmic Obsidian</option>
+          <option value="forest">🌿 Emerald Forest</option>
+          <option value="lava">🔥 Abyssal Lava</option>
+          <option value="frozen">❄️ Frozen Throne</option>
+        </select>
+        <button id="btn-sfx-toggle" class="btn btn-secondary" title="Suara Efek">🔊 SFX</button>
+        <button id="btn-cmd-modal" class="btn btn-secondary">👑 Commander</button>
+        <button id="btn-puzzle-modal" class="btn btn-secondary">🧩 Puzzle</button>
+        <button id="btn-ach-modal" class="btn btn-secondary">🏆 Lencana</button>
+        <button id="btn-install-pwa" class="btn btn-secondary" style="display:none;">📲 Install</button>
+        <button id="btn-help" class="btn btn-ghost">?</button>
+      </div>
+    </header>
+
+    <main class="main-grid">
+      <aside class="panel left-panel">
+        <div class="commander-box">
+          <div class="cmd-info">
+            <span id="cmd-icon" class="cmd-avatar">👑</span>
+            <div>
+              <strong id="cmd-name">Remy (Banker)</strong>
+              <small id="cmd-passive" class="hint">+2 Gold ekstra tiap menang ronde</small>
+            </div>
+          </div>
+          <button id="btn-cmd-skill" class="btn btn-gold btn-sm">⚡ Skill (Siap)</button>
+        </div>
+
+        <div class="panel-tabs">
+          <button class="tab-btn active" data-tab="synergies">Sinergi</button>
+          <button class="tab-btn" data-tab="items">Item & Craft</button>
+          <button class="tab-btn" data-tab="inspect">Detail Hero</button>
+        </div>
+
+        <div id="tab-synergies" class="tab-content active">
+          <div id="synergy-list" class="synergy-list"></div>
+        </div>
+
+        <div id="tab-items" class="tab-content">
+          <p class="hint">Klik hero di papan lalu klik item di bawah untuk memasang. 2 item dasar melebur jadi <strong>Item Epik</strong>!</p>
+          <div id="item-inventory" class="item-inv-grid"></div>
+          <div class="recipe-box">
+            <h4>Resep Item Epik</h4>
+            <ul id="recipe-list"></ul>
+          </div>
+        </div>
+
+        <div id="tab-inspect" class="tab-content">
+          <div id="hero-inspector" class="inspector-box">
+            <p class="empty-note">Klik hero di papan atau bench untuk melihat statistik, skill ultimate, dan tombol jual.</p>
+          </div>
+        </div>
+      </aside>
+
+      <section class="panel center-panel">
+        <div class="arena-top-bar">
+          <div id="mode-indicator" class="mode-pill">Mode: Standard Match</div>
+          <div class="arena-controls">
+            <button id="btn-start-battle" class="btn btn-primary">⚔️ Mulai Pertarungan</button>
+            <button id="btn-speed" class="btn btn-secondary">⏩ 1x</button>
+            <button id="btn-reset-game" class="btn btn-ghost">↻ Reset</button>
+          </div>
+        </div>
+
+        <div id="board-wrapper" class="board-wrapper">
+          <svg id="targeting-svg" class="targeting-svg" viewBox="0 0 640 420" preserveAspectRatio="none"></svg>
+          <div id="fx-layer" class="fx-layer"></div>
+          <div id="chessboard" class="chessboard"></div>
+        </div>
+
+        <div class="bench-section">
+          <div class="bench-header">
+            <span>Bench (Drag & Drop atau Klik untuk Pindah)</span>
+            <small id="bench-count">0 / 8</small>
+          </div>
+          <div id="bench-grid" class="bench-grid"></div>
+        </div>
+      </section>
+
+      <aside class="panel right-panel">
+        <div class="panel-header-row">
+          <h3>📊 Battle Damage Meter</h3>
+          <span id="mvp-badge" class="mvp-pill">MVP: -</span>
+        </div>
+        <div id="damage-meter-list" class="damage-meter-list">
+          <p class="empty-note">Statistik damage & healing tampil saat pertarungan.</p>
+        </div>
+
+        <div class="log-section">
+          <h4>Log Pertarungan</h4>
+          <div id="battle-log" class="battle-log"></div>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="shop-dock">
+      <div class="shop-controls">
+        <button id="btn-buy-xp" class="btn btn-gold">
+          <span>Beli XP</span>
+          <small>4 Gold (+4 XP)</small>
+        </button>
+        <button id="btn-reroll" class="btn btn-secondary">
+          <span>Refresh Toko</span>
+          <small id="reroll-cost-label">2 Gold</small>
+        </button>
+        <button id="btn-lock-shop" class="btn btn-ghost">
+          <span>🔓 Kunci Toko</span>
+        </button>
+      </div>
+      <div id="shop-cards" class="shop-cards"></div>
+    </footer>
+
+    <div id="cmd-modal" class="modal hidden">
+      <div class="modal-card">
+        <div class="modal-head">
+          <h2>👑 Pilih Little Commander</h2>
+          <button class="btn-close" data-close="cmd-modal">✕</button>
+        </div>
+        <div id="cmd-choices" class="fate-choices"></div>
+      </div>
+    </div>
+
+    <div id="fate-modal" class="modal hidden">
+      <div class="modal-card fate-card">
+        <h2>🎁 Fate Box (Kotak Takdir)</h2>
+        <p>Pilih 1 hadiah gratis untuk memperkuat strategi tim Anda!</p>
+        <div id="fate-choices" class="fate-choices"></div>
+      </div>
+    </div>
+
+    <div id="puzzle-modal" class="modal hidden">
+      <div class="modal-card">
+        <div class="modal-head">
+          <h2>🧩 Mode Puzzle Tantangan</h2>
+          <button class="btn-close" data-close="puzzle-modal">✕</button>
+        </div>
+        <p class="hint">Selesaikan skenario taktis melawan formasi musuh tertentu. Menang puzzle membuka lencana khusus!</p>
+        <div id="puzzle-list" class="puzzle-list"></div>
+      </div>
+    </div>
+
+    <div id="ach-modal" class="modal hidden">
+      <div class="modal-card">
+        <div class="modal-head">
+          <h2>🏆 Lencana Pencapaian (Achievements)</h2>
+          <button class="btn-close" data-close="ach-modal">✕</button>
+        </div>
+        <div id="ach-list" class="ach-list"></div>
+      </div>
+    </div>
+
+    <div id="help-modal" class="modal hidden">
+      <div class="modal-card">
+        <div class="modal-head">
+          <h2>Panduan Magic Chess: Go Go v5</h2>
+          <button class="btn-close" data-close="help-modal">✕</button>
+        </div>
+        <ul class="help-list">
+          <li><strong>Little Commander:</strong> Pilih Commander dengan skill pasif & aktif unik untuk mengubah gaya bermain.</li>
+          <li><strong>Mana & Ultimate:</strong> Saat bar biru (Mana) penuh, hero melepaskan Ultimate unik seperti Stun Area atau Crit Burst.</li>
+          <li><strong>Drag & Drop + Jual Hero:</strong> Seret hero antar papan/bench, atau buka tab <em>Detail Hero</em> untuk menjual hero & melepas item.</li>
+          <li><strong>Dual-Synergy & Crafting:</strong> Aktifkan Role + Faksi dan gabungkan 2 item dasar menjadi Item Epik.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

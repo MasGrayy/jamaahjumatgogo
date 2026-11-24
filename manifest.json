@@ -1,0 +1,16 @@
+{
+  "name": "Magic Chess: Go Go — v5 Ultimate",
+  "short_name": "MCGG v5",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#080b14",
+  "theme_color": "#080b14",
+  "description": "Auto-battler strategi Magic Chess: Go Go v5 dengan Little Commander, Ultimate Skill, Drag & Drop, Smart AI, SFX & PWA.",
+  "icons": [
+    {
+      "src": "assets/tigreal.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
